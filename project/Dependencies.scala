@@ -7,6 +7,7 @@ object Dependencies {
     val scalaCheck = "1.13.5"
     val akka = "2.5.3"
     val akkaHttp = "10.0.9"
+    val scalaAsync = "0.9.6"
   }
 
   lazy val library = new {
@@ -32,6 +33,7 @@ object Dependencies {
       "com.typesafe.akka" %% "akka-http-testkit" % version.akkaHttp % Test
     )
 
+    val scalaAsync = "org.scala-lang.modules" %% "scala-async" % version.scalaAsync
 
     // finagle
     val finagle = Seq()
@@ -57,4 +59,9 @@ object Dependencies {
     library.check
   )
 
+  val coreDeps: Seq[ModuleID] = Seq(
+    library.test,
+    library.check,
+    library.scalaAsync
+  )
 }
