@@ -5,6 +5,8 @@ object Dependencies {
   lazy val version = new {
     val scalaTest = "3.0.1"
     val scalaCheck = "1.13.5"
+    val akka = "2.5.3"
+    val akkaHttp = "10.0.9"
   }
 
   lazy val library = new {
@@ -14,34 +16,38 @@ object Dependencies {
 
     // akka actors
     val akkaActor = Seq(
-      "com.typesafe.akka" %% "akka-actor" % "2.5.3",
-      "com.typesafe.akka" %% "akka-testkit" % "2.5.3" % Test
+      "com.typesafe.akka" %% "akka-actor" % version.akka,
+      "com.typesafe.akka" %% "akka-testkit" % version.akka % Test
     )
 
     // akka streams
     val akkaStream = Seq(
-      "com.typesafe.akka" %% "akka-stream" % "2.5.3",
-      "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.3" % Test
+      "com.typesafe.akka" %% "akka-stream" % version.akka,
+      "com.typesafe.akka" %% "akka-stream-testkit" % version.akka % Test
     )
 
     // akka http
     val akkaHttp = Seq(
-      "com.typesafe.akka" %% "akka-http" % "10.0.9",
-      "com.typesafe.akka" %% "akka-http-testkit" % "10.0.9" % Test
+      "com.typesafe.akka" %% "akka-http" % version.akkaHttp,
+      "com.typesafe.akka" %% "akka-http-testkit" % version.akkaHttp % Test
     )
+
+
+    // finagle
+    val finagle = Seq()
   }
 
-  val patternAkkaDependencies: Seq[ModuleID] = Seq(
+  val patternAkkaDeps: Seq[ModuleID] = Seq(
     library.test,
     library.check
   ) ++ library.akkaActor
 
-  val testsDependencies: Seq[ModuleID] = Seq(
+  val testsDeps: Seq[ModuleID] = Seq(
     library.test,
     library.check
   )
 
-  val core1Dependencies: Seq[ModuleID] = Seq(
+  val finagleDeps: Seq[ModuleID] = Seq(
     library.test,
     library.check
   )
