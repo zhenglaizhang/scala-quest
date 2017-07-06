@@ -37,6 +37,11 @@ object Dependencies {
     val finagle = Seq()
   }
 
+  val coreDeps: Seq[ModuleID] = Seq(
+    library.test,
+    library.check
+  )
+
   val patternAkkaDeps: Seq[ModuleID] = Seq(
     library.test,
     library.check

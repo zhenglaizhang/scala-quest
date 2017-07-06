@@ -14,3 +14,4 @@
 ## Guides
 
 - http://www.scala-lang.org/old/node/8610
+- Use **ScalaCheck** extensively
