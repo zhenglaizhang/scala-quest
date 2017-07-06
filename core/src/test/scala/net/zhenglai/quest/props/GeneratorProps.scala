@@ -1,6 +1,6 @@
 package net.zhenglai.quest.props
 
-import org.scalacheck.{ Gen, Properties }
+import org.scalacheck.{ Arbitrary, Gen, Properties }
 
 /*
   Gen[T] may be thought of as a function of type Gen.Params => Option[T]
@@ -45,4 +45,42 @@ object GeneratorProps extends Properties("GeneratorProps") {
   } yield Node(left, right, v)
 
   println(genTree.sample)
+
+  def matrix[T](g: Gen[T]): Gen[Seq[Seq[T]]] = Gen.sized { size => // generation size
+    println(s"wow size=$size")
+    val side = scala.math.sqrt(size).asInstanceOf[Int]
+    Gen.listOfN(side, Gen.listOfN(side, g))
+  }
+
+  println(matrix(arbitrary[Int]).sample)
+
+
+  // conditional generator
+  val smallEvenGenerator = Gen.choose(0, 200) suchThat (_ % 2 == 0)
+  // be careful
+  // Conditional generators work just like conditional properties, in the sense that if the condition is too hard,
+  // ScalaCheck might not be able to generate enough values, and it might report a property test as undecided.
+
+
+  // generating containers
+  val genIntList = Gen.containerOf[List, Int](Gen.oneOf(1, 3, 5))
+  val genStringStream = Gen.containerOf[Stream, String](Gen.alphaStr)
+  val genBooleanList = Gen.nonEmptyListOf[Boolean](true)
+
+  // a special generator, org.scalacheck.Arbitrary.arbitrary, which generates arbitrary values of any supported type
+  val evenInteger = Arbitrary.arbitrary[Int] suchThat (_ % 2 == 0)
+  var squares = for {
+    xs <- arbitrary[List[Int]]
+  } yield xs.map(x => x * x)
+
+  // The arbitrary generator is the generator used by ScalaCheck when it generates values for property parameters.
+  println(squares.sample)
+
+  // You can use arbitrary for any type that has an implicit Arbitrary instance.
+  // implicit lazy val arbBool: Arbitrary[Boolean] = Arbitrary(oneOf(true, false))
+  // -> define an implicit def or val of type Arbitrary[T]
+  //  Use the factory method Arbitrary(...) to create the Arbitrary instance.
+  //  This method takes one parameter of type Gen[T] and returns an instance of Arbitrary[T].
+
+
 }
