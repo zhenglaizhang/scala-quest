@@ -1,5 +1,6 @@
 package net.zhenglai.quest.core
 
+import net.zhenglai.quest.Str
 import org.scalatest.{ FunSuite, Matchers }
 
 /*
@@ -22,7 +23,8 @@ Scala supports two evaluation strategies out-of-the-box:
 How to support `call by need`?
   Call by need is the memoised version of call by name which makes the function argument to be evaluated only once (on the first use).
 
-  Memoisation is an optimisation technique which consists of caching the results of function calls and return the cached result when the function is called with the same input again.
+  Memoisation is an optimisation technique which consists of caching the results of function calls and return the cached result when the
+  function is called with the same input again.
 
  Scala has lazy (by need) values but no lazy arguments
  */
@@ -60,5 +62,39 @@ class EvaluationStrategyTest extends FunSuite with Matchers {
     times(10) {
       println("previous body 2")
     }
+  }
+
+  test("call by need") {
+    lazy val someCostlyComputation: Int = {Thread.sleep(1000); 12}
+    // this will be evaluated at most once
+    // lazy val uses locks which means some overhead is added.
+    // Also, under certain circumstances it can lead to deadlocks.
+    // Nevertheless, for simple use cases it should work fine with a slight performance downgrade.
+
+    def foo(cond: Boolean)(bar: => String) = {
+      lazy val lazyBar = bar
+      if (cond) bar + bar
+      else Str.empty
+    }
+
+    val bar = {
+      println("once")
+      "abc"
+    }
+    foo(true)(bar) shouldBe "abcabc"
+  }
+
+  test("call by need 2") {
+    def foo(cond: Boolean)(bar: =>String) = {
+      if (cond) bar + bar
+      else Str.empty
+    }
+
+    lazy val bar = {
+      println("once")
+      "abc"
+    }
+    foo(true)(bar) shouldBe "abcabc"
+    foo(true) { println("twice"); "abc" } shouldBe "abcabc"
   }
 }
