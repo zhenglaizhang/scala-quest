@@ -32,6 +32,17 @@ object GeneratorProps extends Properties("GeneratorProps") {
   )
 
   sealed abstract class Tree
-  case class Node(left: Tree, right: Tree) extends Tree
+  case class Node(left: Tree, right: Tree, v: Int) extends Tree
   case object Leaf extends Tree
+  import org.scalacheck.Gen
+  import org.scalacheck.Arbitrary.arbitrary
+  val genLeaf = Gen.const(Leaf)
+  def genTree: Gen[Tree] = Gen.oneOf(genLeaf, genNode)
+  val genNode = for {
+    v <- arbitrary[Int]
+    left <- genTree
+    right <- genTree
+  } yield Node(left, right, v)
+
+  println(genTree.sample)
 }

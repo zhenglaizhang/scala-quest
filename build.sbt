@@ -22,5 +22,4 @@ lazy val core = (project in file("core"))
   .dependsOn(`akka-patterns`, finagle, tests)
   .configs(Test)
   .settings(Settings.testsSettings: _*)
-  .settings(libraryDependencies ++= coreDeps)
 
