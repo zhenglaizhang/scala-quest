@@ -1,5 +1,10 @@
 # SCALA QUEST
 
+## Guidelines
+
+- CI & CD
+- Ensure the code is always in a good state
+
 ## Code Style
 
 - https://github.com/databricks/scala-style-guide

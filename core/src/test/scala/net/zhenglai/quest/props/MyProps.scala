@@ -8,6 +8,23 @@ import org.scalacheck.{ Gen, Properties }
 /*
 `forAll takes a function should return Boolean or another property,
  and can take parameters of any types, as long as there exist implicit Arbitrary instances for the types.
+
+
+  todo:
+ Gen vs Arbitrary
+   Scala implicits are convenient, but they can also be troublesome if you're not sure what implicit values or conversions currently are in scope.
+   By using a specific type (Arbitrary) for doing implicit lookups, ScalaCheck tries to constrain the negative impacts of using implicits
+   As an end-user, you should think of Arbitrary[T] as the default generator for the type T
+
+   they limit the scope through semantics. When a method requires an implicit Arbitrary, it means it want the default generator for a type. You could imagine another type class called EdgeCase, implemented just like Arbitrary, but with the semantic intention of representing just edge case generators for a type. Implicit EdgeCase values would then not compete with implicit Arbitrary values during implicit lookup
+
+   the Arbitrary class sometimes simply delegates to Gen instances as in
+
+   you might need to have multiple instances of Gen, so Arbitrary is used to "flag" the one that you want ScalaCheck to use?
+
+   Arbitrary is used to supply implicit Gens, basically, so this allows to use both forAll variants with explicit Gen and with implicit Arbitrary. I don't think non-implicit Arbitrary is ever useful.
+
+   To minimize explicit passing of Gens, you can add an overload taking implicit Arbitrary and still returning Gen as well.
  */
 object MyProps extends Properties("MyProps") {
   // Grouping properties through `Properties` trait
