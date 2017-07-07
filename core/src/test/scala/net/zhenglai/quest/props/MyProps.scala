@@ -112,4 +112,24 @@ object MyProps extends Properties("MyProps") {
       "lt2"  |: res > n
     )
   }
+
+
+  def ordered(list: List[Int]): Boolean = list == list.sorted
+  import org.scalacheck.Prop.classify
+  property("propCollectTestData") = forAll {l: List[Int] =>
+    classify(ordered(l), "ordered") {
+      classify(l.length > 5, "large", "small") {
+        l.reverse.reverse == l
+      }
+    }
+  }
+  // watch the statistics, add special generators to generate missing distribution data if missing
+
+  // collect data directly for presentation report
+  import org.scalacheck.Prop.collect
+  property("propCollect") = forAll(Gen.choose(0, 10)) { n =>
+    collect(n) {
+      n == n
+    }
+  }
 }
