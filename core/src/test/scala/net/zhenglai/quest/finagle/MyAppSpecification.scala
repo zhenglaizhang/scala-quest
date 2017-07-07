@@ -1,4 +1,4 @@
-package net.zhenglai.quest.props
+package net.zhenglai.quest.finagle
 
 import org.scalacheck.Properties
 
