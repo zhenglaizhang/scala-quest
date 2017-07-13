@@ -1,9 +1,9 @@
 package net.zhenglai.quest
 
 import net.zhenglai.quest.fun.Box
-import org.scalatest.FunSuite
+import org.scalatest.{FunSuite, Matchers}
 
-class PrintableTest extends FunSuite {
+class PrintableTest extends FunSuite with Matchers {
 
   test("testShow with interface object") {
     import PrintableInstances._
@@ -29,8 +29,11 @@ class PrintableTest extends FunSuite {
 
   test("Box printable") {
     import net.zhenglai.quest.fun.Box
+    import PrintableInstances._
     import net.zhenglai.quest.fun.Box._
     import PrintableSyntax._
     Box(12).print
+    Box(true).print
+    Box("13").print
   }
 }
