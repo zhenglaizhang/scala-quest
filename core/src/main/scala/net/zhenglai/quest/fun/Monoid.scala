@@ -1,23 +1,27 @@
 package net.zhenglai.quest.fun
 
-trait Monoid[A] extends Semigroup[A] {
+// Specialization is the feature that allows you to generate separate versions of generic classes for primitive types,
+// thus avoiding boxing in most cases.
+// Specialization has a high cost,  on the size of classes, so it must be added with careful consideration.
+trait Monoid[@specialized(Int, Long, Float, Double) A] extends Semigroup[A] {
   // identity element
   def empty: A
 }
 
 object Monoid {
-  def associateLaw[A: Monoid[A]](x: A, y: A, z: A): Boolean = {
-    val m = implicitly[Monoid[A]]
-    m.combine(x, m.combine(y, z)) == m.combine(m.combine(x, y), z)
+  def associateLaw[A: Monoid](x: A, y: A, z: A): Boolean = {
+    val ev = implicitly[Monoid[A]]
+    ev.combine(x, ev.combine(y, z)) == ev.combine(ev.combine(x, y), z)
   }
 
   def identityLaw[A: Monoid](x: A): Boolean = {
-    val m = implicitly[Monoid[A]]
-    (m.combine(x, m.empty) == x) &&
-      (m.combine(m.empty, x) == x)
+    val ev = implicitly[Monoid[A]]
+    (ev.combine(x, ev.empty) == x) &&
+      (ev.combine(ev.empty, x) == x)
   }
 
-  def apply[A: Monoid]: Monoid[A] = implicitly[Monoid[A]]
+  // returns the type class instances
+  @inline final def apply[A: Monoid]: Monoid[A] = implicitly[Monoid[A]]
 
 }
 
