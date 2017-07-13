@@ -107,8 +107,25 @@ class CatsMonoidTest extends FunSuite {
 
     implicit val intMultiMonoid = new Monoid[Int] {
       override def empty = 1
+
       override def combine(x: Int, y: Int) = x * y
     }
     assert((1 |+| 2) == 2)
+  }
+
+  test("more monoids") {
+    import cats.instances.all._
+    import cats.syntax.all._
+    assert((1.some |+| none[Int]).contains(1))
+
+    assert(
+      (Map("a" -> 1, "b" -> 2) |+| Map("b" -> 4))
+        == Map("a" -> 1, "b" -> 6)
+    )
+
+    assert(
+      (("hello", 123) |+| ("world", 124))
+        == ("helloworld", 247)
+    )
   }
 }
