@@ -1,12 +1,13 @@
-package net.zhenglai.quest.cats.ext
+package net.zhenglai.quest.catsext
 
 import java.util.Date
 
 import cats.Eq
 import cats.instances.long._
+import cats.syntax.option._
 import cats.syntax.eq._
 
-trait EqInstances {
+object EqInstancesExt {
   private[this] def note = {
     import cats.instances.int._
     import cats.instances.option._
@@ -17,7 +18,6 @@ trait EqInstances {
     // equals to:
     Option(1) == Option.empty[Int]
 
-    import cats.syntax.option._
     1.some === None
     1.some =!= None
   }
@@ -27,4 +27,3 @@ trait EqInstances {
   }
 }
 
-object EqInstancesO extends EqInstances

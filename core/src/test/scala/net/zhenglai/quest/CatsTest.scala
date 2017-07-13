@@ -2,6 +2,7 @@ package net.zhenglai.quest
 
 import java.util.Date
 
+import cats.Show
 import org.scalatest.FunSuite
 
 class CatsTest extends FunSuite {
