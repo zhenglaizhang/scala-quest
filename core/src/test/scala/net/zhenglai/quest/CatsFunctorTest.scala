@@ -31,6 +31,9 @@ class CatsFunctorTest extends FunSuite with Matchers with GeneratorDrivenPropert
     forAll { (xs: Option[Int]) =>
       Functor[Option].map(xs)(_ * 4) should ===(xs.map(_ * 4))
     }
+
+    // appending transformation to a chain...
+    Option(1).map(_ * 2).map(_ * 100).map(_ / 10)
   }
 
   test("Cats.Functor.lift") {
