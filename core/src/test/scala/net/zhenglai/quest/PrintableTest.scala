@@ -1,5 +1,6 @@
 package net.zhenglai.quest
 
+import net.zhenglai.quest.fun.Box
 import org.scalatest.FunSuite
 
 class PrintableTest extends FunSuite {
@@ -24,5 +25,12 @@ class PrintableTest extends FunSuite {
     import PrintableSyntax._
     implicit val intPrintable: Printable[Int] = Printable[String].contramap((_: Int).toString)
     intPrintable.format(12).print
+  }
+
+  test("Box printable") {
+    import net.zhenglai.quest.fun.Box
+    import net.zhenglai.quest.fun.Box._
+    import PrintableSyntax._
+    Box(12).print
   }
 }
