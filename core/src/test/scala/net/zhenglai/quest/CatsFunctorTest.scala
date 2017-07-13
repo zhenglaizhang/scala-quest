@@ -1,7 +1,8 @@
 package net.zhenglai.quest
 
+import net.zhenglai.quest.fun.{Branch, Leaf, Tree}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.{FunSuite, Matchers}
 
 class CatsFunctorTest extends FunSuite with Matchers with GeneratorDrivenPropertyChecks {
 
@@ -50,5 +51,25 @@ class CatsFunctorTest extends FunSuite with Matchers with GeneratorDrivenPropert
 
     "abc".length should ===(3)
     "abc".length2 should ===("dummy")
+  }
+
+  test("Tree.Functor") {
+    import Tree._
+    import cats.Functor
+    val tree: Tree[Int] = Branch(
+      Branch(Leaf(3), Leaf(1)),
+      Leaf(12)
+    )
+    val mapped = Functor[Tree].map(tree)(_ * 12)
+    mapped should ===(Branch(
+      Branch(Leaf(36), Leaf(12)),
+      Leaf(144)
+    ))
+
+    import cats.syntax.functor._
+    tree.map((_: Int) * 2) should ===(Branch(
+      Branch(Leaf(6), Leaf(2)),
+      Leaf(24)
+    ))
   }
 }
