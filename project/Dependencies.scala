@@ -8,6 +8,7 @@ object Dependencies {
     val akka = "2.5.3"
     val akkaHttp = "10.0.9"
     val scalaAsync = "0.9.6"
+    val cats = "0.9.0"
   }
 
   lazy val library = new {
@@ -37,6 +38,9 @@ object Dependencies {
 
     // finagle
     val finagle = Seq()
+
+    // cats
+    val cats = "org.typelevel" %% "cats" % version.cats
   }
 
   val patternAkkaDeps: Seq[ModuleID] = Seq(
@@ -57,6 +61,7 @@ object Dependencies {
   val coreDeps: Seq[ModuleID] = Seq(
     library.test,
     library.check,
-    library.scalaAsync
+    library.scalaAsync,
+    library.cats
   )
 }
