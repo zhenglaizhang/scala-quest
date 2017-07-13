@@ -24,7 +24,24 @@ class CatsTest extends FunSuite {
     // another constructor methods
     // def show[A](f: A => String): Show[A] = ???
     implicit val dataShow: Show[Date] =
-      Show.show(date => s"${date.getTime}ms since epoch")
+    Show.show(date => s"${date.getTime}ms since epoch")
     println(new Date().show)
   }
+
+  test("eq") {
+    // use `Eq` to define type-safe equality
+    import cats.Eq
+    import cats.instances.int._
+    val eqInt = Eq[Int]
+    assert(eqInt.eqv(123, 123))
+    assert(!eqInt.eqv(123, 125))
+    assert(!(123 == "123"))
+    // assert(eqInt(123, "123"))
+
+    // // with interface syntax
+    // import cats.syntax.eq._
+    // 123 === 123
+    // 123 =!= 234
+  }
+
 }
