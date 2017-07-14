@@ -90,7 +90,17 @@ class CatsFunctorTest extends FunSuite with Matchers with GeneratorDrivenPropert
     val add1: (Int) => Int = (_: Int) + 1
     div2.contramap(add1)(2) should ===(1.5)
     (add1 andThen div2) (2) should ===(1.5)
+    (div2 compose add1)(2) should ===(1.5)
     import cats.syntax.functor._
     add1.map(div2)(2) should ===(1.5)
+  }
+
+  test("Invariant Functor") {
+    import cats.Semigroup
+    import cats.instances.string._
+    import cats.syntax.invariant._
+    import cats.syntax.semigroup._
+    implicit val symbolSemigroup: Semigroup[Symbol] = Semigroup[String].imap(Symbol.apply)(_.name)
+    'a |+| 'few |+| 'words should ===('afewwords)
   }
 }
