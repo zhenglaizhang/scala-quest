@@ -1,8 +1,11 @@
 package net.zhenglai.quest
 
-import scala.concurrent.Future
-import scala.util.Try
+import java.lang
 
+import scala.concurrent.Future
+import scala.util.{Success, Try}
+
+import cats.data.Ior.Left
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{FunSuite, Matchers}
 
@@ -83,5 +86,51 @@ class CatsMonadTest extends FunSuite with Matchers with ScalaFutures {
     sumSquare(Future(1), Future(2)).futureValue should be(5)
     // in test, sync
     sumSquare(a, b) should be(5)
+  }
+
+  test("Either as Monad") {
+    // scala 2.12
+    Right(12).flatMap(x => Right(x + 2)) should be(Right(14))
+    (for {
+      a <- Right(12)
+      b <- Right(14)
+    } yield a + b) should be(Right(26))
+
+    // scala 2.11
+    val c = for {
+      a <- Right(12).right
+      b <- Right(13).right
+    } yield a + b
+    c should be(Right(25))
+
+    import cats.syntax.either._
+    // better type inference
+    val foo: Either[String, Int] = 3.asRight[String]
+    val bar: Either[Int, String] = "hello".asRight[Int]
+
+    // TODO: fix it
+//    Either.catchOnly[NumberFormatException]("foo".toInt) should be(Left(new NumberFormatException("For input string: \"foo\"")))
+//    Either.catchNonFatal(sys.error("error")) should be(Left(new RuntimeException("error")))
+//
+//    Either.fromTry(Try("foo".toInt)) should be(Left())
+//    Either.fromOption[String, Int](None, "badness")
+    "error".asLeft[Int].orElse(2.asRight[String]) should be(Right(2))
+    "error".asLeft[String].getOrElse(0) should be(0)
+    (-1.asRight[String].ensure("Must be non-negative")(_ > 0)) should be("Must be non-negative".asLeft[String])
+    "error".asLeft[String] recover {
+      case str: String => s"Recovered from $str"
+    } should be(Right("Recovered from error"))
+    "error".asLeft[String].recoverWith{ case str: String => Right(s"Recovered from $str") } should be(Right("Recovered from error"))
+
+
+    "foo".asLeft[Int].leftMap(_.reverse) should be("oof".asLeft[Int])
+    6.asRight[String].bimap(_.reverse, _ * 2) should be(12.asRight[String])
+    "bar".asLeft[Int].bimap(_.reverse, _ * 2) should be("rab".asLeft[Int])
+
+    123.asRight[String].swap should be(123.asLeft[Int])
+
+    123.asRight[String].toOption should be(Some(123))
+    123.asRight[String].toSeq should be(Seq(123))
+    123.asRight[Exception].toTry should be(Success(123))
   }
 }
