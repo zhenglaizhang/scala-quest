@@ -63,5 +63,25 @@ class CatsMonadTest extends FunSuite with Matchers with ScalaFutures {
 
     sumSquare(List(1, 2), List(3, 4)) should be(List(10, 17, 13, 20))
     sumSquare(Option(1), Option(2)) should be(Some(5))
+
+    import cats.Id
+    sumSquare(2: Id[Int], 3: Id[Int]) should be(13)
+
+    val a: Id[Int] = Monad[Id].pure(1)
+    val b = Monad[Id].flatMap(a)(_ + 1)
+    val c: Id[List[Int]] = Monad[Id].pure(List(1, 2))
+    val d: Id[Int] = for {
+      x <- a
+      y <- b
+    } yield x + y
+
+    d should be(3)
+
+    // in prod, async
+    import scala.concurrent.ExecutionContext.Implicits.global
+    import cats.instances.future._
+    sumSquare(Future(1), Future(2)).futureValue should be(5)
+    // in test, sync
+    sumSquare(a, b) should be(5)
   }
 }
