@@ -46,4 +46,22 @@ class CatsMonadTest extends FunSuite with Matchers with ScalaFutures {
     val fm = Monad[Future]
     fm.flatMap(fm.pure(1)) { x => fm.pure(x + 2) }.futureValue should be(3)
   }
+
+  test("monad syntax") {
+    import cats.Monad
+    import cats.instances.list._
+    import cats.instances.option._
+    import cats.syntax.applicative._
+    import cats.syntax.flatMap._
+    import cats.syntax.functor._      // flatMap
+    // import cats.implicits._
+    1.pure[Option] should be(Some(1))
+    1.pure[List] should be(List(1))
+
+    def sumSquare[M[_] : Monad](a: M[Int], b: M[Int]): M[Int] =
+      a.flatMap(x => b.map(y => x * x + y * y))
+
+    sumSquare(List(1, 2), List(3, 4)) should be(List(10, 17, 13, 20))
+    sumSquare(Option(1), Option(2)) should be(Some(5))
+  }
 }
