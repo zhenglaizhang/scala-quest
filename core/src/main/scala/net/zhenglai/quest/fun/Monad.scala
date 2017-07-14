@@ -15,7 +15,6 @@ trait Monad[F[_]] {
   def bind[A, B](value: F[A])(func: A => F[B]): F[B] = flatMap(value)(func)
 
   // every monad is also a functor
-  // define map in termis of `pure` & `flatMap`
-  def map[A, B](value: F[A])(func: A => B): F[B] =
-    flatMap(value)(func.andThen(pure))
+  // define map in terms of `pure` & `flatMap`
+  def map[A, B](value: F[A])(func: A => B): F[B] = flatMap(value)(func.andThen(pure))
 }
