@@ -133,4 +133,14 @@ class CatsMonadTest extends FunSuite with Matchers with ScalaFutures {
     123.asRight[String].toSeq should be(Seq(123))
     123.asRight[Exception].toTry should be(Success(123))
   }
+
+  test("either fail-fast sequencing") {
+    import cats.syntax.either._
+    val res = for {
+      a <- 1.asRight[String]
+      b <- 0.asRight[String]
+      c <- if (b == 0) "DIV0".asLeft[Int] else (a / b).asRight[String]
+    } yield c * 100
+    res should be("DIV0".asLeft[Int])
+  }
 }
