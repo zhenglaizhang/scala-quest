@@ -75,4 +75,22 @@ class CatsFunctorTest extends FunSuite with Matchers with GeneratorDrivenPropert
       Leaf(24)
     ))
   }
+
+  test("Contravariant Functor") {
+    import cats.Show
+    import cats.functor.Contravariant
+    import cats.instances.string._
+    val showStr = Show[String]
+    val showSymbol = Contravariant[Show].contramap(showStr)((s: Symbol) => s"'${s.name}'")
+    showSymbol.show('Dave) should ===("'Dave'")
+
+    import cats.instances.function._
+    import cats.syntax.contravariant._
+    val div2: (Int) => Double = (_: Int) / 2.0
+    val add1: (Int) => Int = (_: Int) + 1
+    div2.contramap(add1)(2) should ===(1.5)
+    (add1 andThen div2) (2) should ===(1.5)
+    import cats.syntax.functor._
+    add1.map(div2)(2) should ===(1.5)
+  }
 }
