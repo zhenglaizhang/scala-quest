@@ -143,4 +143,13 @@ class CatsMonadTest extends FunSuite with Matchers with ScalaFutures {
     } yield c * 100
     res should be("DIV0".asLeft[Int])
   }
+
+  test("LoginError handler") {
+    import cats.syntax.either._
+    import LoginError._
+    val res1: LoginResult = User("Zhenglai", "pass0wrd").asRight
+    val res2: LoginResult = UserNotFound("Zhenglai").asLeft
+    res1.fold(handleError, user => println(s"hello $user"))
+    res2.fold(handleError, user => println(s"hello $user"))
+  }
 }

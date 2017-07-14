@@ -11,4 +11,8 @@ package object quest {
     val empty = ""
   }
 
+  // hmm, Throwable is an extremely broad supertype
+  type Result[A] = Either[Throwable, A]
+
+  type LoginResult = Either[LoginError, User]
 }
