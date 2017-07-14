@@ -18,3 +18,13 @@ trait Monad[F[_]] {
   // define map in terms of `pure` & `flatMap`
   def map[A, B](value: F[A])(func: A => B): F[B] = flatMap(value)(func.andThen(pure))
 }
+
+object MonadInstances {
+  type Id[A] = A
+
+  implicit val idMonadInstance = new Monad[Id] {
+    override def pure[A](value: A): Id[A] = value
+
+    override def flatMap[A, B](value: Id[A])(func: (A) => Id[B]): Id[B] = func(value)
+  }
+}
