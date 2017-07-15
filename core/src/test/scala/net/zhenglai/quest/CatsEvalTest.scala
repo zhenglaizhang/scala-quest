@@ -1,5 +1,6 @@
 package net.zhenglai.quest
 
+import cats.Eval
 import org.scalatest.{FunSuite, Matchers}
 
 class CatsEvalTest extends FunSuite with Matchers {
@@ -47,5 +48,30 @@ class CatsEvalTest extends FunSuite with Matchers {
     mem.value should be(42)
     mem.value should be(42)
     mem.value should be(42)
+  }
+
+  test("Eval map/flatMap is trampolined - stack safety") {
+    def factorialBad(n: BigInt): BigInt = if (n == 1) n else n * factorialBad(n - 1)
+
+    a[StackOverflowError] should be thrownBy { factorialBad(500000) }
+
+    def factorialStillBad(n: BigInt): Eval[BigInt] =
+      if (n == 1) Eval.now(n) else factorialStillBad(n - 1).map(_ * n)
+
+    a[StackOverflowError] should be thrownBy { factorialStillBad(50000000) }
+
+    def factorial(n: BigInt): Eval[BigInt] = {
+      if (n == 1) {
+        Eval.now(1)
+      } else {
+        // trampoline is not free
+        Eval.defer(factorial(n - 1).map(_ * n))
+      }
+    }
+
+    val _ = factorial(300).value
+    // stack safe
+    // heap OOM might happen -:)
+    // val _ = factorial(500000000).value
   }
 }
