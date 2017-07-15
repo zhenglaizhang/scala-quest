@@ -1,5 +1,7 @@
 package net.zhenglai
 
+import cats.data.Writer
+
 package object quest {
 
   // TODO: how to add static method to String 
@@ -15,4 +17,7 @@ package object quest {
   type Result[A] = Either[Throwable, A]
 
   type LoginResult = Either[LoginError, User]
+
+  type Logged[A] = Writer[Vector[String], A]
+  // import cats.syntax.applicative._
 }
