@@ -20,4 +20,14 @@ package object quest {
 
   type Logged[A] = Writer[Vector[String], A]
   // import cats.syntax.applicative._
+
+
+  def slowly[A](body: => A) = {
+    try body finally Thread.sleep(100)
+  }
+
+  def factorial(n: Int): Int = {
+    if (n == 0) 1
+    else n * factorial(n - 1)
+  }
 }
