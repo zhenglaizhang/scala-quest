@@ -21,9 +21,46 @@ class CatsWriterTest extends FunSuite with Matchers {
     )
 
     w.value should be(123)
-    w.written.asInstanceOf[Vector[String]] should contain theSameElementsAs Vector(
+    (w.written: Vector[String]) should contain theSameElementsAs Vector(
       "Best of times",
       "Worst of times"
     )
+  }
+
+  test("Writer syntax") {
+    import cats.instances.vector._
+    import cats.syntax.applicative._
+    import cats.syntax.writer._
+    val w = 123.pure[Logged]
+    w.value should be(123)
+    w.written should be(Vector.empty)
+    val v = Vector("msg1", "msg2").tell
+    v.value should be(())
+    v.written should be(Vector("msg1", "msg2"))
+  }
+
+  test("map/flatMap over writer") {
+    import cats.instances.vector._
+    import cats.syntax.applicative._
+    import cats.syntax.writer._
+    val w1 = for {
+      a <- 123.pure[Logged]
+      _ <- Vector("a", "b").tell
+      b <- 32.writer(Vector("x", "y"))
+    } yield a + b
+    val (r1, l1) = w1.run
+    r1 should be(Vector("a", "b", "x", "y"))
+    l1 should be(155)
+    w1.mapWritten(_.map(_.toUpperCase)).run._1 should be(Vector("A", "B", "X", "Y"))
+
+    // mapBoth ...
+    val w2 = w1.bimap(
+      log => log.map(_.toUpperCase),
+      res => res * 100
+    )
+
+    w2.run should be(Vector("A", "B", "X", "Y") -> 15500)
+
+    w2.reset.run should be(Vector.empty -> 15500)
   }
 }
