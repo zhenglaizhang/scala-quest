@@ -1,6 +1,6 @@
 package net.zhenglai
 
-import cats.data.Writer
+import cats.data.{OptionT, Writer}
 
 package object quest {
 
@@ -20,6 +20,10 @@ package object quest {
 
   type Logged[A] = Writer[Vector[String], A]
   // import cats.syntax.applicative._
+
+  // `OptionT` is a monad transformer for `Option`
+  // Option[List[A]]
+  type ListOption[A] = OptionT[List, A]
 
 
   def slowly[A](body: => A) = {
