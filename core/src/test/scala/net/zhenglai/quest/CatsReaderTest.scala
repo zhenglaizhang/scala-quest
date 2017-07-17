@@ -25,4 +25,24 @@ class CatsReaderTest extends FunSuite with Matchers {
     } yield s"$msg2 $msg1"
     (feedAndGreet(Cat("name1", "food1")): String) should be("Have a nice bowl of food1 Hello name1")
   }
+
+  test("checkLogin") {
+    import AuthUser._
+    val db = Db(
+      Map(
+        1 -> "dade",
+        2 -> "kate",
+        3 -> "margo"
+      ),
+      Map(
+        "dade" -> "zerocool",
+        "kate" -> "acidburn",
+        "margo" -> "secret"
+      )
+    )
+
+    checkLogin(1, "zerocool").run(db).asInstanceOf[Boolean] should be(true)
+    checkLogin(1, "ade").run(db).asInstanceOf[Boolean] should be(false)
+    checkLogin(100, "dade").run(db).asInstanceOf[Boolean] should be(false)
+  }
 }
