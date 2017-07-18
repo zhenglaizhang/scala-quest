@@ -81,7 +81,7 @@ class CatsFunctorTest extends FunSuite with Matchers with GeneratorDrivenPropert
     import cats.functor.Contravariant
     import cats.instances.string._
     val showStr = Show[String]
-    val showSymbol = Contravariant[Show].contramap(showStr)((s: Symbol) => s"'${s.name}'")
+    val showSymbol: Show[Symbol] = Contravariant[Show].contramap(showStr)((s: Symbol) => s"'${s.name}'")
     showSymbol.show('Dave) should ===("'Dave'")
 
     import cats.instances.function._

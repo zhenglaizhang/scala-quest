@@ -1,6 +1,6 @@
 package net.zhenglai
 
-import cats.data.{OptionT, Writer}
+import cats.data.{OptionT, Validated, Writer}
 
 package object quest {
 
@@ -25,6 +25,8 @@ package object quest {
   // Option[List[A]]
   type ListOption[A] = OptionT[List, A]
 
+
+  type AllErrorsOr[A] = Validated[List[String], A]
 
   def slowly[A](body: => A) = {
     try body finally Thread.sleep(100)

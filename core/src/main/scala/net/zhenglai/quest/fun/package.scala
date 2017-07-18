@@ -12,4 +12,10 @@ package object fun {
         "Negative, stopping".asLeft[Int]
     }
 
+  // This code is equivalent to a for comprehension
+  def product[M[_] : cats.Monad, A, B](fa: M[A], fb: M[B]): M[(A, B)] = {
+    cats.Monad[M].flatMap(fa) { a =>
+      cats.Monad[M].map(fb) { b => (a, b) }
+    }
+  }
 }
