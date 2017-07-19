@@ -5,6 +5,13 @@ import cats.instances.option._
 import cats.syntax.cartesian._
 import org.scalatest.{FunSuite, Matchers}
 
+/*
+Cartesian defines product function, which produces a pair of (A, B) wrapped in effect F[_] out of F[A] and F[B].
+The symbolic alias for product is |@| also known as the applicative style.
+
+Cartesian has a single law called associativity:
+(F.product(fa, F.product(fb, fc)), F.product(F.product(fa, fb), fc))
+ */
 class CatsCartesianTest extends FunSuite with Matchers {
   test("use Cartesian to join context") {
     Cartesian[Option].product(Some(1), Some(3)) should be(Some(1, 3))
@@ -74,5 +81,22 @@ class CatsCartesianTest extends FunSuite with Matchers {
       Left(Vector("error 1")),
       Left(Vector("error 2"))
     ) should be(Left(Vector("error 1")))
+  }
+
+  test("more") {
+    import cats.instances.list._
+    import cats.syntax.cartesian._
+    import cats.syntax.option._
+    (3.some |@| 5.some) map { _ - _ } should be(Some(-2))
+    (3.some |@| none[Int]) map { _ - _ } should be(none[Int])
+    (none[Int] |@| 3.some) map { _ - _ } should be(none[Int])
+
+    (List("ha", "heh", "hmm") |@| List("?", "!", ".")) map { _ + _ }
+
+    // Cartesian enables two operators, <* and *>, which are special cases of Apply[F].product
+
+    1.some <* 2.some should be(1.some)
+    none[Int] <* 2.some should be(none[Int])
+    none[Int] *> 2.some should be(none[Int])
   }
 }

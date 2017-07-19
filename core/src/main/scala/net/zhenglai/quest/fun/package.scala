@@ -18,4 +18,14 @@ package object fun {
       cats.Monad[M].map(fb) { b => (a, b) }
     }
   }
+
+  def sumWithMonoid[A: cats.Monoid](list: List[A]) = {
+    val monoid = implicitly[cats.Monoid[A]]
+    list.fold(monoid.empty)(monoid.combine)
+  }
+
+  def sumWithNumeric[A: Numeric](list: List[A]) = {
+    val numeric = implicitly[Numeric[A]]
+    list.foldRight(numeric.zero)(numeric.plus)
+  }
 }
