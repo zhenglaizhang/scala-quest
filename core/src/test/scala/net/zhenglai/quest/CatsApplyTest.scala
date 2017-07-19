@@ -19,5 +19,5 @@ class CatsApplyTest extends FunSuite with Matchers {
     Apply[Option].ap({ (_: Int) + 3 }.some)(none[Int]) should be(none[Int])
   }
 
-  
+
 }
