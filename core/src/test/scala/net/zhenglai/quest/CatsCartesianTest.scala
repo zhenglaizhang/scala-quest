@@ -11,6 +11,15 @@ The symbolic alias for product is |@| also known as the applicative style.
 
 Cartesian has a single law called associativity:
 (F.product(fa, F.product(fb, fc)), F.product(F.product(fa, fb), fc))
+
+ * [[Cartesian]] captures the idea of composing independent effectful values.
+ * It is of particular interest when taken together with [[Functor]] - where [[Functor]]
+ * captures the idea of applying a unary pure function to an effectful value,
+ * calling `product` with `map` allows one to apply a function of arbitrary arity to multiple
+ * independent effectful values.
+ *
+ * That same idea is also manifested in the form of [[Apply]], and indeed [[Apply]] extends both
+ * [[Cartesian]] and [[Functor]] to illustrate this.
  */
 class CatsCartesianTest extends FunSuite with Matchers {
   test("use Cartesian to join context") {
@@ -78,20 +87,28 @@ class CatsCartesianTest extends FunSuite with Matchers {
     type ErrorOr[A] = Either[Vector[String], A]
     // still fail fast
     Cartesian[ErrorOr].product(
-      Left(Vector("error 1")),
-      Left(Vector("error 2"))
-    ) should be(Left(Vector("error 1")))
+                                Left(Vector("error 1")),
+                                Left(Vector("error 2"))
+                              ) should be(Left(Vector("error 1")))
   }
 
   test("more") {
     import cats.instances.list._
     import cats.syntax.cartesian._
     import cats.syntax.option._
-    (3.some |@| 5.some) map { _ - _ } should be(Some(-2))
-    (3.some |@| none[Int]) map { _ - _ } should be(none[Int])
-    (none[Int] |@| 3.some) map { _ - _ } should be(none[Int])
+    (3.some |@| 5.some) map {
+      _ - _
+    } should be(Some(-2))
+    (3.some |@| none[Int]) map {
+      _ - _
+    } should be(none[Int])
+    (none[Int] |@| 3.some) map {
+      _ - _
+    } should be(none[Int])
 
-    (List("ha", "heh", "hmm") |@| List("?", "!", ".")) map { _ + _ }
+    (List("ha", "heh", "hmm") |@| List("?", "!", ".")) map {
+      _ + _
+    }
 
     // Cartesian enables two operators, <* and *>, which are special cases of Apply[F].product
 

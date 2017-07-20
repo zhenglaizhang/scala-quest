@@ -6,6 +6,8 @@ import cats.syntax.option._
 import org.scalatest.{FunSuite, Matchers}
 
 /*
+`ap`: Given a value and a function in the Apply context, applies the function to the value.
+
 You can think of <*> as a sort of a beefed-up fmap. Whereas fmap takes a function and a functor and applies the function inside the
 functor value
 <*> takes a functor that has a function in it and another functor and extracts that function from the first functor and then maps it over

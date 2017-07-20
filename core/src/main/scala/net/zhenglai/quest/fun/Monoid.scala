@@ -3,6 +3,7 @@ package net.zhenglai.quest.fun
 // Specialization is the feature that allows you to generate separate versions of generic classes for primitive types,
 // thus avoiding boxing in most cases.
 // Specialization has a high cost,  on the size of classes, so it must be added with careful consideration.
+// In general, we say things like “is X a monoid?” to mean “can X form a monoid under some operation?
 trait Monoid[@specialized(Int, Long, Float, Double) A] extends Semigroup[A] {
   // identity element
   def empty: A

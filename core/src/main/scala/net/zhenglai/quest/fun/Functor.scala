@@ -3,6 +3,10 @@ package net.zhenglai.quest.fun
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.higherKinds
 
+// Either[A, B], which we implied “is-a” functor yesterday.
+// This is not completely accurate because, even though it might not be useful,
+// we could have defined another left-biased functor.
+
 // math.abs -> value constructor
 // math.abs(12) -> value, produced using a value parameter
 // List -> type constructor
